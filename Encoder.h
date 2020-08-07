@@ -131,16 +131,15 @@ public:
 		encoder.position = p;
 		interrupts();
 	}
-	inline bool void rotate_flag() {
+	inline bool rotate_flag() {
 		noInterrupts();
 		if (encoder._rotate_flag) {
 			encoder._rotate_flag = 0;
-			bool ret = 1;
+			return 1;
 		} else {
-			bool ret = 0;
+			return 0;
 		}
 		interrupts();
-		return ret;
 	}
 #else
 	inline int32_t read() {
@@ -156,14 +155,13 @@ public:
 	inline void write(int32_t p) {
 		encoder.position = p;
 	}
-	inline bool void rotate_flag() {
+	inline bool rotate_flag() {
 		if (encoder._rotate_flag) {
 			encoder._rotate_flag = 0;
-			bool ret = 1;
+			return 1;
 		} else {
-			bool ret = 0;
+			return 0;
 		}
-		return ret;
 	}
 #endif
 private:
