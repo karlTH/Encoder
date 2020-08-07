@@ -133,8 +133,8 @@ public:
 	}
 	inline bool void rotate_flag() {
 		noInterrupts();
-		if (encoder.rotate_flag) {
-			encoder.rotate_flag = 0;
+		if (encoder._rotate_flag) {
+			encoder._rotate_flag = 0;
 			bool ret = 1;
 		} else {
 			bool ret = 0;
@@ -157,8 +157,8 @@ public:
 		encoder.position = p;
 	}
 	inline bool void rotate_flag() {
-		if (encoder.rotate_flag) {
-			encoder.rotate_flag = 0;
+		if (encoder._rotate_flag) {
+			encoder._rotate_flag = 0;
 			bool ret = 1;
 		} else {
 			bool ret = 0;
