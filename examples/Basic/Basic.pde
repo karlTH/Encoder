@@ -24,4 +24,11 @@ void loop() {
   if (myEnc.rotate_flag()) {
     Serial.println(myEnc.read());
   }
+  
+  if (Serial.available()) {
+    Serial.read();
+    Serial.println("Reset  knobs to zero");
+    myEnc.write(0);
+    
+  }
 }
