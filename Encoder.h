@@ -64,6 +64,7 @@ typedef struct {
 	IO_REG_TYPE            pin2_bitmask;
 	uint8_t                state;
 	int32_t                position;
+	bool 				   _rotate_flag;
 } Encoder_internal_state_t;
 
 class Encoder
@@ -84,6 +85,7 @@ public:
 		encoder.pin2_register = PIN_TO_BASEREG(pin2);
 		encoder.pin2_bitmask = PIN_TO_BITMASK(pin2);
 		encoder.position = 0;
+		encoder._rotate_flag = 0;
 		// allow time for a passive R-C filter to charge
 		// through the pullup resistors, before reading
 		// the initial state
@@ -129,6 +131,17 @@ public:
 		encoder.position = p;
 		interrupts();
 	}
+	inline bool void rotate_flag() {
+		noInterrupts();
+		if (encoder.rotate_flag) {
+			encoder.rotate_flag = 0;
+			bool ret = 1;
+		} else {
+			bool ret = 0;
+		}
+		interrupts();
+		return ret;
+	}
 #else
 	inline int32_t read() {
 		update(&encoder);
@@ -142,6 +155,15 @@ public:
 	}
 	inline void write(int32_t p) {
 		encoder.position = p;
+	}
+	inline bool void rotate_flag() {
+		if (encoder.rotate_flag) {
+			encoder.rotate_flag = 0;
+			bool ret = 1;
+		} else {
+			bool ret = 0;
+		}
+		return ret;
 	}
 #endif
 private:
@@ -298,15 +320,19 @@ public:
 		switch (state) {
 			case 1: case 7: case 8: case 14:
 				arg->position++;
+				arg->_rotate_flag=1;
 				return;
 			case 2: case 4: case 11: case 13:
 				arg->position--;
+				arg->_rotate_flag=1;
 				return;
 			case 3: case 12:
 				arg->position += 2;
+				arg->_rotate_flag=1;
 				return;
 			case 6: case 9:
 				arg->position -= 2;
+				arg->_rotate_flag=1;
 				return;
 		}
 #endif
